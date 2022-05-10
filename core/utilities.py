@@ -1,29 +1,30 @@
 import random
 from random import randint
-
+import requests
 from config import wsgi
 import json
 from core.pos.models import *
 from core.user.models import User
 
-user = User()
-user.username = 'admin'
-user.first_name = 'William Jair'
-user.last_name = 'Dávila Vargas'
-user.email = 'williamjair94@hotmail.com'
-user.set_password('admin123')
-user.is_superuser = True
-user.save()
-print('Usuario creado correctamente')
 
-company = Company()
-company.name = 'APOLO S.A.'
-company.ruc = '0928363212121'
-company.address = 'Milagro, Ecuador'
-company.mobile = '0979014552'
-company.website = 'https://algorisoft.com'
-company.save()
-print('Compañia creado correctamente')
+# user = User()
+# user.username = 'admin'
+# user.first_name = 'William Jair'
+# user.last_name = 'Dávila Vargas'
+# user.email = 'williamjair94@hotmail.com'
+# user.set_password('admin123')
+# user.is_superuser = True
+# user.save()
+# print('Usuario creado correctamente')
+#
+# company = Company()
+# company.name = 'APOLO S.A.'
+# company.ruc = '0928363212121'
+# company.address = 'Milagro, Ecuador'
+# company.mobile = '0979014552'
+# company.website = 'https://algorisoft.com'
+# company.save()
+# print('Compañia creado correctamente')
 
 
 def insert_products():
@@ -80,5 +81,21 @@ def insert_sale():
         print(i)
 
 
-insert_products()
-insert_sale()
+def test_api():
+    payload = {
+        'username': '0942438904',
+        'password': '0942438904',
+    }
+    headers = {'Authorization': 'Token 7b031fe594f0ca2fb34708e9109c5f9ea89008f7'}
+    r = requests.post('http://192.168.20.62:8000/api/login/', data=payload, headers=headers)
+    if r.status_code == 200:
+        items = r.json()
+        if items['resp']:
+            user = items['user']
+    else:
+        print(r.text)
+
+
+test_api()
+# insert_products()
+# insert_sale()

@@ -3,9 +3,9 @@ import uuid
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
+from django.contrib.auth import login, logout, authenticate
+# from django.contrib.auth.forms import AuthenticationForm
+# from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
@@ -15,17 +15,26 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, RedirectView
 
 from config import settings
-from core.login.forms import ResetPasswordForm, ChangePasswordForm
+from core.login.forms import ResetPasswordForm, ChangePasswordForm, AuthenticationForm
 from core.user.models import User
 
 
-class LoginFormView(LoginView):
+class LoginFormView(FormView):
+    form_class = AuthenticationForm
     template_name = 'login/login.html'
+    success_url = settings.LOGIN_REDIRECT_URL
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(settings.LOGIN_REDIRECT_URL)
         return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # print(form.data['username'])
+        # print(form.cleaned_data['username'])
+        # print(self.request.POST['username'])
+        login(self.request, user=form.get_user())
+        return super(LoginFormView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
