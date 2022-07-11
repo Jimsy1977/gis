@@ -46,6 +46,7 @@ LOCAL_APPS = [
     'core.user',
     'core.homepage',
     'core.pos',
+    'core.security',
 ]
 
 THIRD_PARTY_APPS = [
